@@ -25,6 +25,8 @@ Notes:
 
 - You can pass a 3rd argument to indicates the max number of backup files inside of `dest-folder` (default is 10).
 - Errors are written in `~/make-backup.log`.
+- Package folders (`node_modules` and `vendor`) are automatically ignored and not included in archive file.
+- Other files listed in `.gitignore` or `.tarignore` are ignored too.
 
 ## LICENSE
 
