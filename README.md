@@ -8,8 +8,9 @@ I don't know exactly. I tested with `Bash 4.4.19` in a Lubuntu 18.10 (a Ubuntu-b
 ## Install
 
 ```
-sudo wget https://raw.githubusercontent.com/luizbills/make-backup/master/make-backup -O /usr/bin/make-backup
-sudo chmod +x /usr/bin/make-backup
+MAKE_BACKUP=https://raw.githubusercontent.com/luizbills/make-backup/master/make-backup \
+&& sudo wget "$MAKE_BACKUP" -O /usr/bin/make-backup \
+&& sudo chmod +x /usr/bin/make-backup
 ```
 
 ## Usage
