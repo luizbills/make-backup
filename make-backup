@@ -46,10 +46,6 @@ if [ ! -d $DEST ]; then
 	exit 1;
 fi
 
-# create the backup file name with current date time
-DATE="$(date +'%Y-%m-%d__%H-%M-%S')"
-TAR_FILE_NAME="$(basename $ORIGIN)-$DATE.tar.gz"
-
 # uses .gitignore or .tarignore to ignore some files
 EXCLUDE_FROM=''
 
@@ -69,6 +65,10 @@ cd "$(dirname $ORIGIN)"
 
 COPYFILE_DISABLE=1 # prevent copying files with ._*
 
+# create the backup file name with current date time
+DATE="$(date +'%Y-%m-%d__%H-%M-%S')"
+TAR_FILE_NAME="$(basename $ORIGIN)-$DATE.tar.gz"
+
 # build the tar command
 TAR_CMD="tar -c $EXCLUDES $EXCLUDE_FROM -zcf /tmp/$TAR_FILE_NAME $(basename $ORIGIN) >&2"
 
@@ -87,4 +87,4 @@ fi
 
 # limit the number of backup files (default is 10)
 cd $DEST
-ls -1t | tail -n +$MAX_FILES | xargs rm -f
+ls -1td $(basename $ORIGIN)-*.tar.gz | tail -n +$MAX_FILES | xargs rm -f
