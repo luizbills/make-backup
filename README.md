@@ -1,5 +1,5 @@
 # make-backup
-Simple tool to backup a directory to a destination and delete the oldest generated backup files.
+Simple tool to backup a directory to a destination and delete the oldest generated backup files (by default its keep the 10 more recent files).
 
 ## Requeriments
 
