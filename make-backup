@@ -57,8 +57,8 @@ if [ -f "$ORIGIN/.tarignore" ]; then
 	EXCLUDE_FROM="--exclude-from=$ORIGIN/.tarignore"
 fi
 
-# always exclude packages files
-EXCLUDES="--exclude='node_modules' --exclude='vendor'"
+# always exclude packages files and log files
+EXCLUDES="--exclude='node_modules' --exclude='vendor' --exclude='*.log'"
 
 # cd to target directory
 cd "$(dirname $ORIGIN)"
