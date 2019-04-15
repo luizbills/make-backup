@@ -1,0 +1,90 @@
+#!/bin/bash
+
+ORIGIN="$(realpath $1)"
+DEST="$(realpath $2)"
+MAX_FILES=${3:-"10"}
+ERROR_LOG_FILE="$(realpath ~/make-backup-error.log)"
+
+error_alert () {
+	if [ -x "$(command -v zenity)" ]; then
+		zenity --error --title='Make Backup Error' --text="A problem occurred while running the backup script.\n\nError: $1\n\nLog file: $ERROR_LOG_FILE" --width='320' --display=:0.0
+	fi;
+}
+
+log () {
+	if [ ! -d $ERROR_LOG_FILE ]; then
+		touch $ERROR_LOG_FILE
+	fi
+	echo "ERROR: $1" >&2;
+	echo [$(date +"%Y-%m-%d @ %H:%M:%S")] $1 >> $ERROR_LOG_FILE
+	error_alert "$1"
+}
+
+debug () {
+	echo $1;
+	exit 0;
+}
+
+if [[ ! "$MAX_FILES" =~ ^[0-9]+$ ]]; then
+   log "The 3rd argument is not a integer (current value: $MAX_FILES)"
+   exit 1;
+else
+	MAX_FILES="$(($MAX_FILES + 1))"
+fi
+
+if [ ! -d $ORIGIN ]; then
+	log "'$ORIGIN' is not a directory or not exists"
+	exit 1
+fi
+
+if [ ! -d $DEST ]; then
+	mkdir -p $DEST
+fi
+
+if [ ! -d $DEST ]; then
+	log "Can't create '$DEST' directory"
+	exit 1;
+fi
+
+# create the backup file name with current date time
+DATE="$(date +'%Y-%m-%d__%H-%M-%S')"
+TAR_FILE_NAME="$(basename $ORIGIN)-$DATE.tar.gz"
+
+# uses .gitignore or .tarignore to ignore some files
+EXCLUDE_FROM=''
+
+if [ -f "$ORIGIN/.gitignore" ]; then
+	EXCLUDE_FROM="--exclude-from=$ORIGIN/.gitignore"
+fi
+
+if [ -f "$ORIGIN/.tarignore" ]; then
+	EXCLUDE_FROM="--exclude-from=$ORIGIN/.tarignore"
+fi
+
+# always exclude packages files
+EXCLUDES="--exclude='node_modules' --exclude='vendor'"
+
+# cd to target directory
+cd "$(dirname $ORIGIN)"
+
+COPYFILE_DISABLE=1 # prevent copying files with ._*
+
+# build the tar command
+TAR_CMD="tar -c $EXCLUDES $EXCLUDE_FROM -zcf /tmp/$TAR_FILE_NAME $(basename $ORIGIN) >&2"
+
+# execute the tar command
+eval $TAR_CMD
+
+# copy the tar file
+cp "/tmp/$TAR_FILE_NAME" "$DEST/$TAR_FILE_NAME"
+
+if [ ! -f "$DEST/$TAR_FILE_NAME" ]; then
+	log "Can't create backup file in \"$DEST/$TAR_FILE_NAME\""
+	exit 1;
+else
+	echo "Backup done in $(date +'%Y-%m-%d @ %H:%M:%S')!" >&2;
+fi
+
+# limit the number of backup files (default is 10)
+cd $DEST
+ls -1t | tail -n +$MAX_FILES | xargs rm -f
