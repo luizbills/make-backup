@@ -1,5 +1,5 @@
 # make-backup
-Simple tool to copy folder and move to destination
+Simple tool to backup a directory to a destination and delete the oldest generated backup files.
 
 ## Requeriments
 
