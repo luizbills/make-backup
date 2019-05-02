@@ -26,7 +26,7 @@ Notes:
 
 - You can pass a *3rd argument* to indicates the max number of backup files inside of `dest-folder` (default is 10).
 - Errors are written in `~/make-backup.log`.
-- If you need ignore files, create a file named `.backup-ignore`. This file will be passed in `tar` command as `--exclude-from=.backup-ignore`.
+- If you need ignore files, create a file named `.backup-ignore` in the root directory.
 
 ## LICENSE
 
