@@ -1,7 +1,7 @@
 #!/bin/bash
 
-ORIGIN="$(realpath $1)"
-DEST="$(realpath $2)"
+ORIGIN="$(realpath $1 2>/dev/null)"
+DEST="$(realpath $2 2>/dev/null)"
 MAX_FILES=${3:-"10"}
 ERROR_LOG_FILE="$(realpath ~/make-backup-error.log)"
 
@@ -25,9 +25,14 @@ debug () {
 	exit 0;
 }
 
+if [ -z "$ORIGIN" ] || [ -z "$DEST" ]; then
+      echo "Usage: make-backup origin destination [max-files]"
+      exit 1
+fi
+
 if [[ ! "$MAX_FILES" =~ ^[0-9]+$ ]]; then
    log "The 3rd argument is not a integer (current value: $MAX_FILES)"
-   exit 1;
+   exit 1
 else
 	MAX_FILES="$(($MAX_FILES + 1))"
 fi
@@ -43,7 +48,7 @@ fi
 
 if [ ! -d $DEST ]; then
 	log "Can't create '$DEST' directory"
-	exit 1;
+	exit 1
 fi
 
 # uses .gitignore or .tarignore to ignore some files
