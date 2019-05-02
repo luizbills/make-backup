@@ -49,10 +49,6 @@ fi
 # uses .gitignore or .tarignore to ignore some files
 EXCLUDE_FROM=''
 
-if [ -f "$ORIGIN/.gitignore" ]; then
-	EXCLUDE_FROM="--exclude-from=$ORIGIN/.gitignore"
-fi
-
 if [ -f "$ORIGIN/.tarignore" ]; then
 	EXCLUDE_FROM="--exclude-from=$ORIGIN/.tarignore"
 fi
