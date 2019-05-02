@@ -53,7 +53,7 @@ if [ ! -d $DEST ]; then
 fi
 
 # uses .backup-ignore to ignore files and folders
-EXCLUDE_FROM="--exclude-from=$ORIGIN/.backup-ignore"
+EXCLUDE_FROM="--exclude-from=.backup-ignore"
 
 # cd to target directory
 cd "$(dirname $ORIGIN)"
