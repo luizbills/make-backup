@@ -53,7 +53,7 @@ if [ ! -d $DEST ]; then
 fi
 
 # uses .backup-ignore to ignore files and folders
-EXCLUDE_FROM="--exclude-from=.backup-ignore"
+EXCLUDE_FROM="--exclude-from=$ORIGIN/.backup-ignore"
 
 # cd to target directory
 cd "$(dirname $ORIGIN)"
@@ -65,7 +65,7 @@ DATE="$(date +'%Y-%m-%d__%H-%M-%S')"
 TAR_FILE_NAME="$(basename $ORIGIN)-$DATE.tar.gz"
 
 # build the tar command
-TAR_CMD="tar $EXCLUDE_FROM -zcf /tmp/$TAR_FILE_NAME $(basename $ORIGIN) >/dev/null"
+TAR_CMD="tar $EXCLUDE_FROM -zcf /tmp/$TAR_FILE_NAME $(basename $ORIGIN) 2>/dev/null"
 
 # execute the tar command
 eval $TAR_CMD
@@ -77,7 +77,7 @@ if [ ! -f "$DEST/$TAR_FILE_NAME" ]; then
 	log "Can't create backup file in \"$DEST/$TAR_FILE_NAME\""
 	exit 1
 else
-	echo "Backup done in $(date +'%Y-%m-%d @ %H:%M:%S')!" >/dev/null
+	echo "Backup done in $(date +'%Y-%m-%d @ %H:%M:%S')!"
 fi
 
 # limit the number of backup files (default is 10)
