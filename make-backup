@@ -25,6 +25,7 @@ debug () {
 	exit 0;
 }
 
+# check the parameters
 if [ -z "$ORIGIN" ] || [ -z "$DEST" ]; then
       echo "Usage: make-backup origin destination [max-files]"
       exit 1
@@ -51,15 +52,8 @@ if [ ! -d $DEST ]; then
 	exit 1
 fi
 
-# uses .gitignore or .tarignore to ignore some files
-EXCLUDE_FROM=''
-
-if [ -f "$ORIGIN/.tarignore" ]; then
-	EXCLUDE_FROM="--exclude-from=$ORIGIN/.tarignore"
-fi
-
-# always exclude packages files and log files
-EXCLUDES="--exclude='node_modules' --exclude='vendor' --exclude='*.log'"
+# uses .backup-ignore to ignore files and folders
+EXCLUDE_FROM="--exclude-from=$ORIGIN/.backup-ignore"
 
 # cd to target directory
 cd "$(dirname $ORIGIN)"
@@ -71,7 +65,7 @@ DATE="$(date +'%Y-%m-%d__%H-%M-%S')"
 TAR_FILE_NAME="$(basename $ORIGIN)-$DATE.tar.gz"
 
 # build the tar command
-TAR_CMD="tar -c $EXCLUDES $EXCLUDE_FROM -zcf /tmp/$TAR_FILE_NAME $(basename $ORIGIN) >&2"
+TAR_CMD="tar $EXCLUDE_FROM -zcf /tmp/$TAR_FILE_NAME $(basename $ORIGIN) >/dev/null"
 
 # execute the tar command
 eval $TAR_CMD
@@ -81,9 +75,9 @@ cp "/tmp/$TAR_FILE_NAME" "$DEST/$TAR_FILE_NAME"
 
 if [ ! -f "$DEST/$TAR_FILE_NAME" ]; then
 	log "Can't create backup file in \"$DEST/$TAR_FILE_NAME\""
-	exit 1;
+	exit 1
 else
-	echo "Backup done in $(date +'%Y-%m-%d @ %H:%M:%S')!" >&2;
+	echo "Backup done in $(date +'%Y-%m-%d @ %H:%M:%S')!" >/dev/null
 fi
 
 # limit the number of backup files (default is 10)
