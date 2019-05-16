@@ -52,8 +52,11 @@ if [ ! -d $DEST ]; then
 	exit 1
 fi
 
-# uses .backup-ignore to ignore files and folders
-EXCLUDE_FROM="--exclude-from=$ORIGIN/.backup-ignore"
+EXCLUDE_FROM=''
+if [ ! -f "$ORIGIN/.backup-ignore" ]; then
+	# uses .backup-ignore to ignore files and folders
+	EXCLUDE_FROM="--exclude-from=$ORIGIN/.backup-ignore"
+fi
 
 # cd to target directory
 cd "$(dirname $ORIGIN)"
