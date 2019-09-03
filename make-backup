@@ -53,7 +53,7 @@ if [ ! -d $DEST ]; then
 fi
 
 EXCLUDE_FROM=''
-if [ ! -f "$ORIGIN/.backup-ignore" ]; then
+if [ -f "$ORIGIN/.backup-ignore" ]; then
 	# uses .backup-ignore to ignore files and folders
 	EXCLUDE_FROM="--exclude-from=$ORIGIN/.backup-ignore"
 fi
