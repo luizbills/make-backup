@@ -27,8 +27,9 @@ debug () {
 
 # check the parameters
 if [ -z "$ORIGIN" ] || [ -z "$DEST" ]; then
-      echo "Usage: make-backup origin destination [max-files]"
-      exit 1
+	log "Invalid origin or destination"
+	echo "Usage: make-backup origin destination [max-files]"
+	exit 1
 fi
 
 if [[ ! "$MAX_FILES" =~ ^[0-9]+$ ]]; then
@@ -77,7 +78,7 @@ eval $TAR_CMD
 cp "/tmp/$TAR_FILE_NAME" "$DEST/$TAR_FILE_NAME"
 
 if [ ! -f "$DEST/$TAR_FILE_NAME" ]; then
-	log "Can't create backup file in \"$DEST/$TAR_FILE_NAME\""
+	log "Can't create backup file in '${DEST}/${TAR_FILE_NAME}'"
 	exit 1
 else
 	echo "Backup done in $(date +'%Y-%m-%d @ %H:%M:%S')!"
